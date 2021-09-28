@@ -1,0 +1,14 @@
+# **DO NOT MODIFY**
+
+export COURSE := ICS2021
+URL := 'http://jyywiki.cn/static/submit-icslab.sh'
+
+submit:
+	@cd $(dir $(abspath $(lastword $(MAKEFILE_LIST)))) && \
+	  curl -sSL '$(URL)' | bash
+
+git:
+	@git add $(shell find . -name "*.c") $(shell find . -name "*.h") -A --ignore-errors
+	@while (test -e .git/index.lock); do sleep 0.1; done
+	@(hostnamectl && uptime) | git commit -F - -q --author='tracer-nju <tracer@nju.edu.cn>' --no-verify --allow-empty
+	@sync
