@@ -34,6 +34,10 @@ uint64_t add_mod(uint64_t x, uint64_t y, uint64_t m){
 }
 
 uint64_t power_mod(uint64_t x, uint64_t exp, uint64_t m){
+    if (exp == 0){
+      return mod(x, m);
+    }
+    
     uint64_t h128 = x >> (64 - exp);
     uint64_t l128 = x << exp;
     uint64_t valid = valid_bits(m);
@@ -78,5 +82,13 @@ uint64_t power_mod(uint64_t x, uint64_t exp, uint64_t m){
 
 
 uint64_t multimod(uint64_t a, uint64_t b, uint64_t m) {
-  return (a * b) % m; // buggy
+  uint64_t result = 0;
+  
+  for (int i = 0; i < 64; i++){
+    uint64_t sign = (a >> i) & 1;
+    if (sign == 1){
+      result = add_mod(result, power_mod(b, i, m), m);
+    }
+  }
+  return result;
 }
