@@ -23,15 +23,15 @@ void test_power(uint64_t a, uint64_t i, uint64_t m) {
 
 int main() {
   test(123, 456, 789);
-  test(123, 456, -1ULL);
-  test(-2ULL, 2, -1ULL);
-  test(2, -2ULL, -1ULL);
+  // test(123, 456, -1ULL);
+  // test(-2ULL, 2, -1ULL);
+  // test(2, -2ULL, -1ULL);
   //定位错误
   test(3, -2ULL, -1ULL);
-  test(-2ULL, -2ULL, -1ULL); // should be 1
+  // test(-2ULL, -2ULL, -1ULL); // should be 1
 
   uint64_t a = UINT64_MAX / 3, b = UINT64_MAX / 2, m = 10071;
   // test_add(a, b, m);
   // test_power(a, 5, m);
-  test_power(123, 2, m);
+  // test_power(123, 2, m);
 }

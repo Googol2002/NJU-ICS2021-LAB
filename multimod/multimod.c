@@ -1,4 +1,6 @@
 #include <stdint.h>
+#include <assert.h>
+#include <stdio.h>
 
 #define LENGTH64 (sizeof(uint64_t) * 8)
 
@@ -11,6 +13,9 @@ uint64_t valid_bits(uint64_t n){
   return valid;
 }
 
+uint64_t power_mod(uint64_t x, uint64_t exp, uint64_t m);
+
+//x只能处理在2^64-1范围内的数
 uint64_t mod(uint64_t x, uint64_t m){
   uint64_t valid = valid_bits(m);
 
@@ -25,19 +30,24 @@ uint64_t mod(uint64_t x, uint64_t m){
 
 uint64_t add_mod(uint64_t x, uint64_t y, uint64_t m){
   uint64_t t = x + y;
-  if (t < x || t < y){// 溢出
-    return mod(mod(t, m) + mod(UINT64_MAX, m), m);
+  if (t < x || t < y){// t + 2 ^ 64溢出
+    //(~m) + 1 相当于 2 ^ 64 - m
+    return mod(mod(t, m) +  mod((~m) + 1, m), m);
   }else {
     return mod(t, m);
   }
 
 }
 
+#define LHS(x, t) (t >= 64 || t < 0 ? 0 : x << t)
+#define RHS(x, t) (t >= 64 || t < 0 ? 0 : x >> t)
+
 uint64_t power_mod(uint64_t x, uint64_t exp, uint64_t m){
     if (exp == 0){
       return mod(x, m);
     }
     
+    uint64_t c = 0;
     uint64_t h128 = x >> (64 - exp);
     uint64_t l128 = x << exp;
     uint64_t valid = valid_bits(m);
@@ -46,32 +56,53 @@ uint64_t power_mod(uint64_t x, uint64_t exp, uint64_t m){
     for (int r = 128 - valid; r >= 0; r--){
         int l = r + valid - 1; // 这就是最左端下标
         uint64_t buffer = 0;
+        _Bool flag = 0;
         // 读数
         if (r >= 64){
-            buffer = (h128 >> (r - 64));
+            buffer = RHS(h128, (r - 64));
+            c = RHS(h128, (r - 64 + 64)) & 1;
         }else if (l <= 63){
-            buffer = ((l128 >> (r - 0)) | (h128  << (64 - r)));
+            buffer = (RHS(l128, (r - 0)) | LHS(h128, (64 - r)));
+            c = RHS(h128, (r - 64 + 64)) & 1;
         }else {
-            buffer = ((h128  << (64 - r)) | (l128 >> r));
+            buffer = (LHS(h128, (64 - r)) | RHS(l128, r));
+            c = RHS(h128, (r)) & 1;
         }
-        //求解
-        if (buffer >= m){
+        
+        if (c == 1){//t + 2^64 的情况
+          if (buffer >= m){
+            printf("l: %d r %d", l, r);
+            //assert(0);
+          }
+          buffer += (~m + 1);
+          flag = 1;
+        }
+        if (buffer >= m){//t 情况
             buffer -= m;
         }
         //覆写
         if (r >= 64){
-            h128 &= ~(mask << (r - 64));
-            h128 |= (buffer << (r - 64));
+            h128 &= ~LHS(mask, (r - 64));
+            h128 |= LHS(buffer, (r - 64));
+            if (flag){
+              h128 &= ~LHS(1, (r));
+            }
         }else if (l <= 63){
-            l128 &= ~(mask << r);
-            h128 &= ~(mask >> (64 - r));
-            l128 |= (buffer << r);
-            h128 |= (buffer >> (64 - r));
+            l128 &= ~LHS(mask, r);
+            h128 &= ~RHS(mask, (64 - r));
+            l128 |= LHS(buffer, r);
+            h128 |= RHS(buffer, (64 - r));
+            if (flag){
+              h128 &= ~LHS(1, (r));
+            }
         }else {
-            h128 &= ~(mask >> (64 - r));
-            l128 &= ~(mask << r);
-            h128 |= (buffer >> (64 - r));
-            l128 |= (buffer << r);
+            h128 &= ~RHS(mask, (64 - r));
+            l128 &= ~LHS(mask, r);
+            h128 |= RHS(buffer, (64 - r));
+            l128 |= LHS(buffer, r);
+            if (flag){
+              h128 &= ~LHS(1, (r));
+            }
         }
 
     }
