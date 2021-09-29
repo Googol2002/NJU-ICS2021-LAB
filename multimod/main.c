@@ -12,7 +12,7 @@ void test(uint64_t a, uint64_t b, uint64_t m) {
 
 void test_add(uint64_t a, uint64_t b, uint64_t m) {
   #define U64 "%" PRIu64
-  printf(U64 " * " U64 " add_mod " U64 " = " U64 "\n", a, b, m, add_mod(a, b, m));
+  printf(U64 " + " U64 " mod " U64 " = " U64 "\n", a, b, m, add_mod(a, b, m));
 }
 
 int main() {
