@@ -3,6 +3,7 @@
 #include <inttypes.h>
 
 uint64_t multimod(uint64_t, uint64_t, uint64_t);
+uint64_t add_mod(uint64_t x, uint64_t y, uint64_t m);
 
 void test(uint64_t a, uint64_t b, uint64_t m) {
   #define U64 "%" PRIu64
