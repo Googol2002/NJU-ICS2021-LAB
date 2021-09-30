@@ -2,7 +2,7 @@
 #include <assert.h>
 #include <stdio.h>
 
-#define LENGTH64 (sizeof(uint64_t) * 8)
+#define LENGTH64 64
 
 uint64_t valid_bits(uint64_t n){
   uint64_t valid;
@@ -71,10 +71,6 @@ uint64_t power_mod(uint64_t x, uint64_t exp, uint64_t m){
         }
         
         if (c == 1){//t + 2^64 的情况
-          if (buffer >= m){
-            printf("l: %d r %d", l, r);
-            //assert(0);
-          }
           buffer += (~m + 1);
           flag = 1;
         }
