@@ -14,6 +14,7 @@ uint64_t valid_bits(uint64_t n){
 }
 
 uint64_t power_mod(uint64_t x, uint64_t exp, uint64_t m);
+uint64_t ONE = 1;
 
 //x只能处理在2^64-1范围内的数
 uint64_t mod(uint64_t x, uint64_t m){
@@ -39,8 +40,8 @@ uint64_t add_mod(uint64_t x, uint64_t y, uint64_t m){
 
 }
 
-#define LHS(x, t) (t >= 64 || t < 0 ? 0 : x << t)
-#define RHS(x, t) (t >= 64 || t < 0 ? 0 : x >> t)
+#define LHS(x, t) ((t >= 64 || t < 0) ? 0 : x << t)
+#define RHS(x, t) ((t >= 64 || t < 0) ? 0 : x >> t)
 
 uint64_t power_mod(uint64_t x, uint64_t exp, uint64_t m){
     if (exp == 0){
@@ -85,7 +86,7 @@ uint64_t power_mod(uint64_t x, uint64_t exp, uint64_t m){
             h128 &= ~LHS(mask, (r - 64));
             h128 |= LHS(buffer, (r - 64));
             if (flag){
-              h128 &= ~LHS(1, (r));
+              h128 &= ~LHS(ONE, (r));
             }
         }else if (l <= 63){
             l128 &= ~LHS(mask, r);
@@ -93,7 +94,7 @@ uint64_t power_mod(uint64_t x, uint64_t exp, uint64_t m){
             l128 |= LHS(buffer, r);
             h128 |= RHS(buffer, (64 - r));
             if (flag){
-              h128 &= ~LHS(1, (r));
+              h128 &= ~LHS(ONE, (r));
             }
         }else {
             h128 &= ~RHS(mask, (64 - r));
@@ -101,7 +102,7 @@ uint64_t power_mod(uint64_t x, uint64_t exp, uint64_t m){
             h128 |= RHS(buffer, (64 - r));
             l128 |= LHS(buffer, r);
             if (flag){
-              h128 &= ~LHS(1, (r));
+              h128 &= ~LHS(ONE, (r));
             }
         }
 
