@@ -105,7 +105,6 @@ uint64_t power_mod(uint64_t x, uint64_t exp, uint64_t m){
               h128 &= ~LHS(ONE, (r));
             }
         }
-
     }
 
     return l128;
