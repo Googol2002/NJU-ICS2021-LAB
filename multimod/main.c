@@ -30,7 +30,7 @@ int main() {
   // test(3, -2ULL, -1ULL);
   test(0xFFFFFFFF, -2ULL, -1ULL);
   test(0x2FFFFFFFF, -2ULL, -1ULL);
-  // test(-2ULL, -2ULL, -1ULL); // should be 1
+  test(-2ULL, -2ULL, -1ULL); // should be 1
 
   uint64_t a = UINT64_MAX / 3, b = UINT64_MAX / 2, m = 10071;
   // test_add(a, b, m);
