@@ -84,21 +84,24 @@ void *asm_memcpy(void *dest, const void *src, size_t n) {
 
 int asm_setjmp(asm_jmp_buf env) {
   __asm__(
+    // 存old rpb
     "movq (%%rbp), %%rax;"\
-    "movq %%rax, 8(%0);"\
-    // #存rbx
-    "movq %%rbx, (%0);"\
-    "movq %%rsi, 16(%0);"\
-    // #存rdi
-    "movq %%rdi, 24(%0);"\
-    "leaq 16(%%rbp), %%rax;" \
-    // #存rsp
-    "movq %%rax, 32(%0);"\
-    //存返回地址rip
+    "movq %%rax, 0(%0);"\
+    // 存rbx
+    "movq %%rbx, 8(%0);"\
+    // 存old rip
     "movq 8(%%rbp), %%rax;"\
-    "movq %%rax, 40(%0)":
+    "movq %%rax, 16(%0);"\
+    // 存old rsp
+    "leaq 16(%%rbp), %%rax;"\
+    "movq %%rax, 24(%0);"\
+    // 存 r12 - r15
+    "movq %%r12, 32(%0);"\
+    "movq %%r13, 40(%0);"\
+    "movq %%r14, 48(%0);"\
+    "movq %%r15, 56(%0);"\
     :
-    "c" (env):
+    :"c" (env):
     "memory", "rax"
   );
 
@@ -109,21 +112,22 @@ int asm_setjmp(asm_jmp_buf env) {
 void asm_longjmp(asm_jmp_buf env, int val) {
   __asm__(
     "movl %1, %%eax;"\
-    // 恢复rbx
-    "movq (%0), %%rbx;"\
     // 恢复rbp
-    "movq 8(%0), %%rbp;"\
-    // 恢复rsi
-    "movq 16(%0), %%rsi;"\
-    // 恢复rdi
-    "movq 24(%0), %%rdi;"\
-    // 恢复rsp
-    "movq 32(%0), %%rsp;"\
+    "movq (%0), %%rbp;"\
+    // 恢复rbx
+    "movq 8(%0), %%rbx;"\
+    // 恢复r12-r15
+    "movq 32(%0), %%r12;"\
+    "movq 40(%0), %%r13;"\
+    "movq 48(%0), %%r14;"\
+    "movq 56(%0), %%r15;"\
     // 取rip
-    "movq 40(%0), %%rcx;"\
+    "movq 16(%0), %%r10;"\
+    // 恢复rsp，在最后恢复是考虑到red zone的原因
+    "movq 24(%0), %%rsp;"\
     //恢复rip
-    "jmp *%%rcx;":
-    :"c" (env), "m" (val)
+    "jmp *%%r10;":
+    :"rdi" (env), "m" (val)
   );
 
   //longjmp(env, val);
