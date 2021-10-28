@@ -108,15 +108,22 @@ int asm_setjmp(asm_jmp_buf env) {
 
 void asm_longjmp(asm_jmp_buf env, int val) {
   __asm__(
-    "mov (%0), %%rbx #取rbx;"\
-    "mov 8(%0), %%rbp #取rbp;"\
-    "mov 16(%0), %%rsi #取rsi;"\
-    "mov 24(%0), %%rdi #取rdi;"\
-    "lea (%%rbp, 16), %%rax;" \
-    "mov 32(%0), %%rsp #取rsp;"\
-    "mov 40(%0), %%rcx #取rip;"\
-    "mov %1, %%rax"
-    "jmp *%%rcx #恢复rip;":
+    // #取rbx
+    "movq (%0), %%rbx;"\
+    // #取rbp
+    "movq 8(%0), %%rbp;"\
+    // #取rsi
+    "movq 16(%0), %%rsi;"\
+    //取rdi
+    "movq 24(%0), %%rdi;"\
+    "leaq (%%rbp, 16), %%rax;" \
+    //取rsp
+    "movq 32(%0), %%rsp;"\
+    //取rip
+    "movq 40(%0), %%rcx;"\
+    "movq %1, %%rax"
+    //恢复rip
+    "jmp *%%rcx;":
     :"c" (env), "m" (val)
   );
 
