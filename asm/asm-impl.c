@@ -85,13 +85,19 @@ void *asm_memcpy(void *dest, const void *src, size_t n) {
 int asm_setjmp(asm_jmp_buf env) {
   __asm__(
     "mov (%%rbp), %%rax;"\
-    "mov %%rax, 8(%0) #存rbp;"\
-    "mov %%rsi, 16(%0) #存rsi;"\
-    "mov %%rdi, 24(%0) #存rdi;"\
+    // #存rbp
+    "mov %%rax, 8(%0);"\ 
+    //#存rsi
+    "mov %%rsi, 16(%0);"\
+    // #存rdi
+    "mov %%rdi, 24(%0);"\
     "lea (%%rbp, 16), %%rax;" \
-    "mov %%rax, 32(%0) #存rsp;"\
-    "mov %%rbx, (%0) #存rbx;"\
-    "mov 8(%%rbp), %%rax #存返回地址rip;"\
+    // #存rsp
+    "mov %%rax, 32(%0);"\
+    // #存rbx
+    "mov %%rbx, (%0);"\
+    //存返回地址rip
+    "mov 8(%%rbp), %%rax;"\
     "mov %%rax, 40(%0)":
     :
     "c" (env):
