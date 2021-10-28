@@ -85,13 +85,13 @@ void *asm_memcpy(void *dest, const void *src, size_t n) {
 int asm_setjmp(asm_jmp_buf env) {
   __asm__(
     "mov (%%rbp), %%rax;"\
-    "mov %%rax, 8(%0); #存rbp"\
-    "mov %%rsi, 16(%0); #存rsi"\
-    "mov %%rdi, 24(%0); #存rdi"\
+    "mov %%rax, 8(%0) #存rbp;"\
+    "mov %%rsi, 16(%0) #存rsi;"\
+    "mov %%rdi, 24(%0) #存rdi;"\
     "lea (%%rbp, 16), %%rax;" \
-    "mov %%rax, 32(%0); #存rsp"\
-    "mov %%rbx, (%0); #存rbx"\
-    "mov 8(%%rbp), %%rax; #存返回地址rip"\
+    "mov %%rax, 32(%0) #存rsp;"\
+    "mov %%rbx, (%0) #存rbx;"\
+    "mov 8(%%rbp), %%rax #存返回地址rip;"\
     "mov %%rax, 40(%0)":
     :
     "c" (env):
@@ -104,17 +104,16 @@ int asm_setjmp(asm_jmp_buf env) {
 
 void asm_longjmp(asm_jmp_buf env, int val) {
   __asm__(
-    "mov (%0), %%rbx; #取rbx"\
+    "mov (%0), %%rbx #取rbx;"\
     "mov 8(%0), %%rbp #取rbp;"\
-    "mov 16(%0), %%rsi; #取rsi"\
-    "mov 24(%0), %%rdi; #取rdi"\
+    "mov 16(%0), %%rsi #取rsi;"\
+    "mov 24(%0), %%rdi #取rdi;"\
     "lea (%%rbp, 16), %%rax;" \
-    "mov 32(%0), %%rsp; #取rsp"\
-    "mov 40(%0), %%rcx;"\
+    "mov 32(%0), %%rsp #取rsp;"\
+    "mov 40(%0), %%rcx #取rip;"\
     "mov %1, %%rax"
-    "jmp *%%rcx #存rip":
-    :
-    "c" (env), "a" (val)
+    "jmp *%%rcx #恢复rip;":
+    :"c" (env), "m" (val)
   );
 
   //longjmp(env, val);
