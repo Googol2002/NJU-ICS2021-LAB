@@ -69,7 +69,7 @@ void *asm_memcpy(void *dest, const void *src, size_t n) {
     "mov $0, %%rsi;"\
     "1:;"\
     "mov (%0, %%rsi, 1), %%rax;"\
-    "mov %%rax, (%1, %%rsi);"
+    "mov %%rax, (%1, %%rsi);":
     :
     "r"(src), "r"(dest), "r"(n):
     "memory", "rsi", "rax"
