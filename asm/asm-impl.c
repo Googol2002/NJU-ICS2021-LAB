@@ -94,7 +94,7 @@ int asm_setjmp(asm_jmp_buf env) {
     "mov 8(%%rbp), %%rax;"\
     "mov %%rax, 40(%0)":
     :
-    "r" (env):
+    "c" (env):
     "memory", "rax"
   );
 

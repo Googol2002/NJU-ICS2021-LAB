@@ -16,7 +16,7 @@ int main() {
     asm_memcpy(dst, src, 9);
     assert(strcmp(src, dst) == 0);
 
-    asm_longjmp(buf, 123);
+    //asm_longjmp(buf, 123);
   } else {
     assert(r == 123);
     printf("PASSED.\n");
