@@ -68,11 +68,11 @@ void *asm_memcpy(void *dest, const void *src, size_t n) {
   __asm__(
     "mov $0, %%rsi;"\
     "1:;"\
-    "mov (%0, %%rsi, 1), %%rax;"\
-    "mov %%rax, (%1, %%rsi);"\
+    "movb (%0, %%rsi), %%al;"\
+    "movb %%al, (%1, %%rsi);"\
     "inc %%rsi;"\
     "cmp %%rsi, %2;"\
-    "jl 1b":
+    "jg 1b":
     :
     "r"(src), "r"(dest), "r"(n):
     "memory", "rsi", "rax"
@@ -83,7 +83,23 @@ void *asm_memcpy(void *dest, const void *src, size_t n) {
 }
 
 int asm_setjmp(asm_jmp_buf env) {
-  return setjmp(env);
+  __asm__(
+    "mov (%%rbp), %%rax;"\
+    "mov %%rax, (%0, $1, 8); #存rbp"\
+    "mov %%rsi, (%0, $2, 8); #存rsi"\
+    "mov %%rdi, (%0, $3, 8); #存rdi"\
+    "lea (%%rbp, 16), %%rax;" \
+    "mov %%rax, %%rdi, (%0, $4, 8); #存rsp"\
+    "mov %%rbx, (%0, $0, 8); #存rbx"\
+    "mov 8(%%rbp), %%rax;"\
+    "mov %%rax, (%0, $5, 8)":
+    :
+    "r" (env):
+    "memory", "rax"
+  );
+
+  return 0;
+  //return setjmp(env);
 }
 
 void asm_longjmp(asm_jmp_buf env, int val) {
