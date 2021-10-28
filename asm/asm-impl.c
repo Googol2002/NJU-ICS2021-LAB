@@ -13,7 +13,7 @@ int64_t asm_add(int64_t a, int64_t b) {
 }
 
 int asm_popcnt(uint64_t x) {
-  int s = 0;
+  uint64_t s = 0;
   //有效在%0中
   __asm__(
   "movq %2, %0;"\
