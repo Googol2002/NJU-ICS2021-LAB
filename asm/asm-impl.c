@@ -53,8 +53,7 @@ int asm_popcnt(uint64_t x) {
   "andq %8, %2;"\
   "andq %8, %0;"\
   "addq %2, %0;"\
-  "movq %0, %2;"
-  : 
+  "movq %0, %2;":
   "=r" (s):
   "0" (s), "r" (x), "m"(c1), "m"(c2), "m"(c3), "m"(c4), "m"(c5), "m"(c6)
   );
@@ -66,7 +65,20 @@ int asm_popcnt(uint64_t x) {
 }
 
 void *asm_memcpy(void *dest, const void *src, size_t n) {
-  return memcpy(dest, src, n);
+  __asm__(
+    "addi $0, %%esi;"\
+    "1:;"\
+    "mov (%0, %%esi), %%eax"\
+    "mov %%eax, (%1, %%esi)"\
+    "dec %%esi"\
+    "cmp %%esi, %2"\
+    "jl %1b":
+    :
+    "r"(src), "r"(dest), "r"(n):
+    "memory", "esi", "eax"
+  );
+  
+  //return memcpy(dest, src, n);
 }
 
 int asm_setjmp(asm_jmp_buf env) {
