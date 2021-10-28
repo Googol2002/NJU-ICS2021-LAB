@@ -20,38 +20,38 @@ int asm_popcnt(uint64_t x) {
   __asm__(
   "movq %2, %0;"\
   "shrq $1, %2;"\
-  "andq %2, %3;"\
-  "andq %0, %3;"\
+  "andq %3, %2;"\
+  "andq %3, %0;"\
   "addq %2, %0;"\
   "movq %0, %2;"\
 
   "shrq $2, %2;"\
-  "andq %2, %4;"\
-  "andq %0, %4;"\
+  "andq %4, %2;"\
+  "andq %4, %0;"\
   "addq %2, %0;"\
   "movq %0, %2;"\
 
   "shrq $4 ,%2;"\
-  "andq %2, %5;"\
-  "andq %0, %5;"\
+  "andq %5, %2;"\
+  "andq %5, %0;"\
   "addq %2, %0;"\
   "movq %0, %2;"\
 
   "shrq $8, %2;"\
-  "andq %2, %6;"\
-  "andq %0, %6;"\
+  "andq %6, %2;"\
+  "andq %6, %0;"\
   "addq %2, %0;"\
   "movq %0, %2;"\
 
   "shrq $16, %2;"\
-  "andq %2, %7;"\
-  "andq %0, %7;"\
+  "andq %7, %2;"\
+  "andq %7, %0;"\
   "addq %2, %0;"\
   "movq %0, %2;"\
 
   "shrq $32, %2;"\
-  "andq %2, %8;"\
-  "andq %0, %8;"\
+  "andq %8, %2;"\
+  "andq %8, %0;"\
   "addq %2, %0;"\
   "movq %0, %2;"
   : 
