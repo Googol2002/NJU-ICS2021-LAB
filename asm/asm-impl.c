@@ -89,7 +89,7 @@ int asm_setjmp(asm_jmp_buf env) {
     "mov %%rsi, 16(%0);"\
     // #存rdi
     "mov %%rdi, 24(%0);"\
-    "lea (%%rbp, 16), %%rax;" \
+    "lea 16(%%rbp), %%rax;" \
     // #存rsp
     "mov %%rax, 32(%0);"\
     // #存rbx
