@@ -68,7 +68,7 @@ void *asm_memcpy(void *dest, const void *src, size_t n) {
   __asm__(
     "mov $0, %%rsi;"\
     "1:;"\
-    "mov 0(%0, %%rsi, 1), %%rax"\
+    "mov 0(%0, %%rsi, 1), %%rax;"\
     "mov %%rax, (%1, %%rsi)"\
     "dec %%rsi"\
     "cmp %%rsi, %2"\
