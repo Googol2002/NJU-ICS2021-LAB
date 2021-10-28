@@ -71,7 +71,8 @@ void *asm_memcpy(void *dest, const void *src, size_t n) {
     "mov (%0, %%rsi, 1), %%rax;"\
     "mov %%rax, (%1, %%rsi);"\
     "inc %%rsi;"\
-    "cmp %%rsi, %2;":
+    "cmp %%rsi, %2;"\
+    "jl 1b":
     :
     "r"(src), "r"(dest), "r"(n):
     "memory", "rsi", "rax"
