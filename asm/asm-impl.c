@@ -121,7 +121,7 @@ void asm_longjmp(asm_jmp_buf env, int val) {
     "movq 32(%0), %%rsp;"\
     //取rip
     "movq 40(%0), %%rcx;"\
-    "movq %1, %%rax"
+    "movq %1, %%rax;"
     //恢复rip
     "jmp *%%rcx;":
     :"c" (env), "m" (val)
