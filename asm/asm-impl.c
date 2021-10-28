@@ -66,16 +66,16 @@ int asm_popcnt(uint64_t x) {
 
 void *asm_memcpy(void *dest, const void *src, size_t n) {
   __asm__(
-    "mov $0, %%esi;"\
+    "mov $0, %%rsi;"\
     "1:;"\
-    "mov 0(%0, %%esi, 1), %%eax"\
-    "mov %%eax, (%1, %%esi)"\
-    "dec %%esi"\
-    "cmp %%esi, %2"\
+    "mov 0(%0, %%rsi, 1), %%rax"\
+    "mov %%rax, (%1, %%rsi)"\
+    "dec %%rsi"\
+    "cmp %%rsi, %2"\
     "jl %1b":
     :
     "r"(src), "r"(dest), "r"(n):
-    "memory", "esi", "eax"
+    "memory", "rsi", "rax"
   );
   
   return dest;
