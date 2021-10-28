@@ -14,6 +14,8 @@ int64_t asm_add(int64_t a, int64_t b) {
 
 int asm_popcnt(uint64_t x) {
   uint64_t s = 0;
+  uint64_t c1 = 0x5555555555555555, c2 = 0x3333333333333333, c3 = 0x0F0F0F0F0F0F0F0F, 
+    c4 = 0x00FF00FF00FF00FF, c5 = 0x0000FFFF0000FFFF, c6 = 0x00000000FFFFFFFF;
   //有效在%0中
   __asm__(
   "movq %2, %0;"\
@@ -54,8 +56,7 @@ int asm_popcnt(uint64_t x) {
   "movq %0, %2;"
   : 
   "=r" (s):
-  "0" (s), "r" (x), "n"(0x5555555555555555), "n"(0x3333333333333333), "n"(0x0F0F0F0F0F0F0F0F),
-   "n"(0x00FF00FF00FF00FF), "n"(0x0000FFFF0000FFFF), "n"(0x00000000FFFFFFFF)
+  "0" (s), "r" (x), "m"(c1), "m"(c2), "m"(c3), "m"(c4), "m"(c5), "m"(c6)
   );
   
   // for (int i = 0; i < 64; i++) {
