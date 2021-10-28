@@ -86,14 +86,14 @@ int asm_setjmp(asm_jmp_buf env) {
   __asm__(
     "movq (%%rbp), %%rax;"\
     "movq %%rax, 8(%0);"\
+    // #存rbx
+    "movq %%rbx, (%0);"\
     "movq %%rsi, 16(%0);"\
     // #存rdi
     "movq %%rdi, 24(%0);"\
     "leaq 16(%%rbp), %%rax;" \
     // #存rsp
     "movq %%rax, 32(%0);"\
-    // #存rbx
-    "movq %%rbx, (%0);"\
     //存返回地址rip
     "movq 8(%%rbp), %%rax;"\
     "movq %%rax, 40(%0)":
@@ -108,20 +108,19 @@ int asm_setjmp(asm_jmp_buf env) {
 
 void asm_longjmp(asm_jmp_buf env, int val) {
   __asm__(
-    // #取rbx
+    "movl %1, %%rax;"\
+    // 恢复rbx
     "movq (%0), %%rbx;"\
-    // #取rbp
+    // 恢复rbp
     "movq 8(%0), %%rbp;"\
-    // #取rsi
+    // 恢复rsi
     "movq 16(%0), %%rsi;"\
-    //取rdi
+    // 恢复rdi
     "movq 24(%0), %%rdi;"\
-    "leaq 16(%%rbp), %%rax;" \
-    //取rsp
+    // 恢复rsp
     "movq 32(%0), %%rsp;"\
-    //取rip
+    // 取rip
     "movq 40(%0), %%rcx;"\
-    "movq %1, %%rax;"
     //恢复rip
     "jmp *%%rcx;":
     :"c" (env), "m" (val)
