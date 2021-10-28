@@ -116,7 +116,7 @@ void asm_longjmp(asm_jmp_buf env, int val) {
     "movq 16(%0), %%rsi;"\
     //取rdi
     "movq 24(%0), %%rdi;"\
-    "leaq (%%rbp, 16), %%rax;" \
+    "leaq 16(%%rbp), %%rax;" \
     //取rsp
     "movq 32(%0), %%rsp;"\
     //取rip
