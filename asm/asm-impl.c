@@ -17,37 +17,37 @@ int asm_popcnt(uint64_t x) {
   //有效在%0中
   __asm__(
   "movq %2, %0;"\
-  "shrq %2, $1;"\
+  "shrq $1, %2;"\
   "andq %2, %3;"\
   "andq %0, %3;"\
   "addq %2, %0;"\
   "movq %0, %2;"\
 
-  "shrq %2, $2;"\
+  "shrq $2, %2;"\
   "andq %2, %4;"\
   "andq %0, %4;"\
   "addq %2, %0;"\
   "movq %0, %2;"\
 
-  "shrq %2, $4;"\
+  "shrq $4 ,%2;"\
   "andq %2, %5;"\
   "andq %0, %5;"\
   "addq %2, %0;"\
   "movq %0, %2;"\
 
-  "shrq %2, $8;"\
+  "shrq $8, %2;"\
   "andq %2, %6;"\
   "andq %0, %6;"\
   "addq %2, %0;"\
   "movq %0, %2;"\
 
-  "shrq %2, $16;"\
+  "shrq $16, %2;"\
   "andq %2, %7;"\
   "andq %0, %7;"\
   "addq %2, %0;"\
   "movq %0, %2;"\
 
-  "shrq %2, $32;"\
+  "shrq $32, %2;"\
   "andq %2, %8;"\
   "andq %0, %8;"\
   "addq %2, %0;"\
