@@ -84,7 +84,7 @@ void *asm_memcpy(void *dest, const void *src, size_t n) {
 
 int asm_setjmp(asm_jmp_buf env) {
   __asm__(
-    "movq (%%rbp), %%eax;"\
+    "movq (%%rbp), %%rax;"\
     "movq %%rax, 8(%0);"\
     // #存rbx
     "movq %%rbx, (%0);"\
@@ -108,7 +108,7 @@ int asm_setjmp(asm_jmp_buf env) {
 
 void asm_longjmp(asm_jmp_buf env, int val) {
   __asm__(
-    "movl %1, %%rax;"\
+    "movl %1, %%eax;"\
     // 恢复rbx
     "movq (%0), %%rbx;"\
     // 恢复rbp
