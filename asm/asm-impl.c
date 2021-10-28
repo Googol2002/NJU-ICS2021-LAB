@@ -7,7 +7,7 @@ int64_t asm_add(int64_t a, int64_t b) {
   "mv %1, %0;"\
   "add %2 %0":
   "=r" (result):
-  "m" (a) "m" (b)
+  "m" (a), "m" (b)
   );
   return result;
 }
