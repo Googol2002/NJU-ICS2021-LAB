@@ -86,11 +86,16 @@ int asm_setjmp(asm_jmp_buf env) {
   __asm__(
     "mov (%%rbp), %%rax;"\
     "mov %%rax, 8(%0);"\ 
+    //#存rsi
     "mov %%rsi, 16(%0);"\
+    // #存rdi
     "mov %%rdi, 24(%0);"\
     "lea (%%rbp, 16), %%rax;" \
+    // #存rsp
     "mov %%rax, 32(%0);"\
+    // #存rbx
     "mov %%rbx, (%0);"\
+    //存返回地址rip
     "mov 8(%%rbp), %%rax;"\
     "mov %%rax, 40(%0)":
     :
