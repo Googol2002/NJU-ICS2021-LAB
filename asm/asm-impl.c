@@ -91,7 +91,7 @@ int asm_setjmp(asm_jmp_buf env) {
     "lea (%%rbp, 16), %%rax;" \
     "mov %%rax, 32(%0); #存rsp"\
     "mov %%rbx, (%0); #存rbx"\
-    "mov 8(%%rbp), %%rax; #存返回地址"\
+    "mov 8(%%rbp), %%rax; #存返回地址rip"\
     "mov %%rax, 40(%0)":
     :
     "c" (env):
@@ -109,9 +109,10 @@ void asm_longjmp(asm_jmp_buf env, int val) {
     "mov 16(%0), %%rsi; #取rsi"\
     "mov 24(%0), %%rdi; #取rdi"\
     "lea (%%rbp, 16), %%rax;" \
-    "mov 32(%0), %%rax; #取rax"\
+    "mov 32(%0), %%rsp; #取rsp"\
     "mov 40(%0), %%rcx;"\
-    "jmp *%%rcx":
+    "mov %1, %%rax"
+    "jmp *%%rcx #存rip":
     :
     "c" (env), "a" (val)
   );
