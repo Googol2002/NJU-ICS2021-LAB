@@ -80,7 +80,7 @@ void *asm_memcpy(void *dest, const void *src, size_t n) {
 int asm_setjmp(asm_jmp_buf env) {
    __asm__(
     //恢复
-    "leave"\
+    "leave;"\
     // 存old rip
     "pop %%r10;"\
     "movq %%r10, 16(%0);"\
