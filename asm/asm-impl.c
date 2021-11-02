@@ -79,15 +79,15 @@ void *asm_memcpy(void *dest, const void *src, size_t n) {
 
 int asm_setjmp(asm_jmp_buf env) {
    __asm__(
-    // 存old rsp
-    "movq %%rbp, 24(%0);"\
-    "movq %%rbp, %%rsp;"\
-    // 存old rpb
-    "pop %%rbp;"\
-    "movq %%rbp, 0(%0);"\
+    //恢复
+    "leave"\
     // 存old rip
     "pop %%r10;"\
     "movq %%r10, 16(%0);"\
+    // 存old rpb
+    "movq %%rbp, 0(%0);"\
+    // 存old rsp
+    "movq %%rsp, 24(%0);"\
     // 存rbx
     "movq %%rbx, 8(%0);"\
     // 存 r12 - r15
