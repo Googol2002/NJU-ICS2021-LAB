@@ -83,23 +83,21 @@ int asm_setjmp(asm_jmp_buf env) {
     "leave;"\
     // 存old rip
     "popq %%r10;"\
-    "movq %%r10, 16(%0);"\
+    "movq %%r10, 16(%%rdi);"\
     "push %%r10;"\
     // 存old rpb
-    "movq %%rbp, 0(%0);"\
+    "movq %%rbp, 0(%%rdi);"\
     // 存old rsp
-    "movq %%rsp, 24(%0);"\
+    "movq %%rsp, 24(%%rdi);"\
     // 存rbx
-    "movq %%rbx, 8(%0);"\
+    "movq %%rbx, 8(%%rdi);"\
     // 存 r12 - r15
-    "movq %%r12, 32(%0);"\
-    "movq %%r13, 40(%0);"\
-    "movq %%r14, 48(%0);"\
-    "movq %%r15, 56(%0);"\
+    "movq %%r12, 32(%%rdi);"\
+    "movq %%r13, 40(%%rdi);"\
+    "movq %%r14, 48(%%rdi);"\
+    "movq %%r15, 56(%%rdi);"\
     "movq $0, %%rax;"\
     "ret;"
-    :
-    :"D" (env):
     //将env强制在rdi中
   );
 
