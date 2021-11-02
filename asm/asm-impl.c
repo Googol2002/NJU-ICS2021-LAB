@@ -1,5 +1,4 @@
 #include "asm.h"
-#include <string.h>
 
 int64_t asm_add(int64_t a, int64_t b) {
   int64_t result = 0;
@@ -57,10 +56,7 @@ int asm_popcnt(uint64_t x) {
   "=r" (s):
   "0" (s), "r" (x), "m"(c1), "m"(c2), "m"(c3), "m"(c4), "m"(c5), "m"(c6)
   );
-  
-  // for (int i = 0; i < 64; i++) {
-  //   if ((x >> i) & 1) s++;
-  // }
+
   return s;
 }
 
@@ -79,7 +75,6 @@ void *asm_memcpy(void *dest, const void *src, size_t n) {
   );
   
   return dest;
-  // return memcpy(dest, src, n);
 }
 
 int asm_setjmp(asm_jmp_buf env) {
@@ -101,12 +96,12 @@ int asm_setjmp(asm_jmp_buf env) {
     "movq %%r14, 48(%0);"\
     "movq %%r15, 56(%0);"\
     :
-    :"c" (env):
+    :"D" (env):
     "memory", "rax"
+    //将env强制在rdi中
   );
 
   return 0;
-  //return setjmp(env);
 }
 
 void asm_longjmp(asm_jmp_buf env, int val) {
@@ -127,8 +122,7 @@ void asm_longjmp(asm_jmp_buf env, int val) {
     "movq 24(%0), %%rsp;"\
     //恢复rip
     "jmp *%%r10;":
-    :"rdi" (env), "m" (val)
+    :"D" (env), "S" (val)
+    //将env强制在rdi中，val强制存在rsi中
   );
-
-  //longjmp(env, val);
 }
