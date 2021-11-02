@@ -97,7 +97,7 @@ int asm_setjmp(asm_jmp_buf env) {
     "movq %%r14, 48(%%rdi);"\
     "movq %%r15, 56(%%rdi);"\
     "movq $0, %%rax;"\
-    "ret;"
+    "ret;"::
     //将env强制在rdi中
   );
 
