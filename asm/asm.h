@@ -1,5 +1,4 @@
 #include <stdint.h>
-#include <stddef.h>
 
 typedef long int jmp_buf[8];
 #define asm_jmp_buf jmp_buf
