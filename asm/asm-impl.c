@@ -100,7 +100,6 @@ int asm_setjmp(asm_jmp_buf env) {
     "ret;"
     :
     :"D" (env):
-    "memory", "rax"
     //将env强制在rdi中
   );
 
