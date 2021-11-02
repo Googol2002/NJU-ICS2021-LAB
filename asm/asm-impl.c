@@ -82,7 +82,7 @@ int asm_setjmp(asm_jmp_buf env) {
     //恢复
     "leave;"\
     // 存old rip
-    "pop %%r10;"\
+    "popq %%r10;"\
     "movq %%r10, 16(%0);"\
     "push %%r10;"\
     // 存old rpb
