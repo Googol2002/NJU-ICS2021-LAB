@@ -78,7 +78,7 @@ void *asm_memcpy(void *dest, const void *src, size_t n) {
 }
 
 int asm_setjmp(asm_jmp_buf env) {
-  __asm__(
+  volatile __asm__(
     // 存old rsp
     "movq %%rbp, 24(%0);"\
     "movq %%rbp, %%rsp;"\
