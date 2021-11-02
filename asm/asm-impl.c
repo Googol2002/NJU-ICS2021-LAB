@@ -1,10 +1,13 @@
 #include "asm.h"
 
 int64_t asm_add(int64_t a, int64_t b) {
+  int64_t result = 0;
   __asm__(
   "movq 16(%%rbp), %%rax;"\
-  "addq 24(%%rbp), %%rax"
+  "addq 24(%%rbp), %%rax;"\
+  "movq %%rax, -8(%%rbp)"
   );
+  return result;
 }
 
 int asm_popcnt(uint64_t x) {
