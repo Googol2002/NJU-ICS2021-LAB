@@ -78,7 +78,7 @@ void *asm_memcpy(void *dest, const void *src, size_t n) {
 }
 
 int asm_setjmp(asm_jmp_buf env) {
-   __asm__(
+   __asm__ __volatile__ (
     //恢复
     "leave;"\
     // 存old rip
