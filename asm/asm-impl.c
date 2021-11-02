@@ -3,12 +3,11 @@
 int64_t asm_add(int64_t a, int64_t b) {
   int64_t result = 0;
   __asm__(
-  "movq (%%rbp), %%rax;"\
-  "movq 16(%%rbp), %%rax;"\
-  "addq 24(%%rbp), %%rax;"\
-  "movq %%rax, -8(%%rbp)"
+  "movq %1, %0;"\
+  "addq %2, %0":
+  "=r" (result):
+  "m" (a), "m" (b)
   );
-
   return result;
 }
 
