@@ -84,6 +84,7 @@ int asm_setjmp(asm_jmp_buf env) {
     // 存old rip
     "pop %%r10;"\
     "movq %%r10, 16(%0);"\
+    "push %%r10;"\
     // 存old rpb
     "movq %%rbp, 0(%0);"\
     // 存old rsp
@@ -96,7 +97,7 @@ int asm_setjmp(asm_jmp_buf env) {
     "movq %%r14, 48(%0);"\
     "movq %%r15, 56(%0);"\
     "movq $0, %%rax;"\
-    "jmp *%%r10;"
+    "ret;"
     :
     :"D" (env):
     "memory", "rax"
