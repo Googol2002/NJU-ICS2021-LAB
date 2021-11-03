@@ -110,7 +110,7 @@ int main() {
   } else if ( jmpVal == 2 ) {
     printf("fun_b errorn");
   } else {  // jmpVal == 0
-    int x = 5;
+    int x = 11;
     int result = fun_c(x);
     printf("Result = %dn", result);
   }
