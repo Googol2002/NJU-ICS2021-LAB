@@ -1,8 +1,6 @@
 #include <stdint.h>
 #include <stddef.h>
 
-#include <setjmp.h>
-
 typedef uint64_t __my_jmp_buf[8];
 struct __my__jmp_buf_struct{
     __my_jmp_buf __jmpbuf;
