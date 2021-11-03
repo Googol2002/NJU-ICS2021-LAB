@@ -78,27 +78,28 @@ void *asm_memcpy(void *dest, const void *src, size_t n) {
 }
 
 int asm_setjmp(asm_jmp_buf env) {
-  //  __asm__(
-  //   //恢复
-  //   "leave;"\
-  //   "popq %%rcx;"\
-  //   // 存old rip
-  //   "movq %%rcx, 16(%%rdi);"\
-  //   // 存old rpb
-  //   "movq %%rbp, 0(%%rdi);"\
-  //   // 存old rsp
-  //   "movq %%rsp, 24(%%rdi);"\
-  //   // 存rbx
-  //   "movq %%rbx, 8(%%rdi);"\
-  //   // 存 r12 - r15
-  //   "movq %%r12, 32(%%rdi);"\
-  //   "movq %%r13, 40(%%rdi);"\
-  //   "movq %%r14, 48(%%rdi);"\
-  //   "movq %%r15, 56(%%rdi);"\
-  //   "xorq %%rax, %%rax;"\
-  //   "jmpq	*%%rcx"::
-  // );
-
+  /*
+   __asm__(
+    //恢复
+    "leave;"\
+    "popq %%rcx;"\
+    // 存old rip
+    "movq %%rcx, 16(%%rdi);"\
+    // 存old rpb
+    "movq %%rbp, 0(%%rdi);"\
+    // 存old rsp
+    "movq %%rsp, 24(%%rdi);"\
+    // 存rbx
+    "movq %%rbx, 8(%%rdi);"\
+    // 存 r12 - r15
+    "movq %%r12, 32(%%rdi);"\
+    "movq %%r13, 40(%%rdi);"\
+    "movq %%r14, 48(%%rdi);"\
+    "movq %%r15, 56(%%rdi);"\
+    "xorq %%rax, %%rax;"\
+    "jmpq	*%%rcx"::
+  );
+  */
   return 0;
 }
 
