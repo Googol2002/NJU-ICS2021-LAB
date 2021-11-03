@@ -80,15 +80,21 @@ void *asm_memcpy(void *dest, const void *src, size_t n) {
 int asm_setjmp(asm_jmp_buf env) {
   
    __asm__(
+    // 存rbx
     "movq %%rbx, 8(%%rdi);"\
+    // 存 r12 - r15
     "movq %%r12, 32(%%rdi);"\
     "movq %%r13, 40(%%rdi);"\
     "movq %%r14, 48(%%rdi);"\
     "movq %%r15, 56(%%rdi);"\
+    //恢复
     "leave;"\
     "popq %%rcx;"\
+    // 存old rip
     "movq %%rcx, 16(%%rdi);"\
+    // 存old rpb
     "movq %%rbp, 0(%%rdi);"\
+    // 存old rsp
     "movq %%rsp, 24(%%rdi);"\
     "xorq %%rax, %%rax;"\
     "jmpq	*%%rcx"::
@@ -100,18 +106,26 @@ int asm_setjmp(asm_jmp_buf env) {
 void asm_longjmp(asm_jmp_buf env, int val) {
   __asm__(
     "movq %%rsi, %%rax;"\
+    // 恢复rbp
     "movq 0(%%rdi), %%rbp;"\
+    // 恢复rbx
     "movq 8(%%rdi), %%rbx;"\
+    // 恢复r12-r15
     "movq 32(%%rdi), %%r12;"\
     "movq 40(%%rdi), %%r13;"\
     "movq 48(%%rdi), %%r14;"\
     "movq 56(%%rdi), %%r15;"\
-    "movq 16(%%rdi), %%rcx;"\
+    // 取rip
+    "movq 16(%%rdi), %%r10;"\
+    /* cannot be 0 in this case */
     "testq	%%rax, %%rax;"\
     "jnz	1f;"\
     "incq	%%rax;"\
+    // 恢复rsp，在最后恢复是考虑到red zone的原因
     "1:movq 24(%%rdi), %%rsp;"\
-    "jmp *%%rcx;":
+    //恢复rip
+    "jmp *%%r10;":
     :
+    //将env强制在rdi中，val强制存在rsi中
   );
 }
