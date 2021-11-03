@@ -115,7 +115,7 @@ void asm_longjmp(asm_jmp_buf env, int val) {
     "movq 48(%0), %%r14;"\
     "movq 56(%0), %%r15;"\
     // 取rip
-    "movl 16(%0), %%r10;"\
+    "movq 16(%0), %%r10;"\
     /* cannot be 0 in this case */
     "testl	%%eax, %%eax;"\
     "jnz	1f;"\
