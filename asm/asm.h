@@ -3,7 +3,7 @@
 
 // typedef uint64_t __my_jmp_buf[8];
 struct __my__jmp_buf_struct{
-    uint64_t __jmpbuf[8];
+    uintptr_t __jmpbuf[8];
 };
 typedef struct __my__jmp_buf_struct my_jmp_buf[1];
 #define asm_jmp_buf my_jmp_buf
