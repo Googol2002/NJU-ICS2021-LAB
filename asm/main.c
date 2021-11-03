@@ -37,7 +37,8 @@
 #include <stdio.h>
 #include <setjmp.h>
 
-儲存程式跳躍時所需之資訊
+//儲存程式跳躍時所需之資訊
+
 asm_jmp_buf jmpbuffer;
 
 int fun_a(int v) {
