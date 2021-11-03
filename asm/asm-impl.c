@@ -105,9 +105,9 @@ int asm_setjmp(asm_jmp_buf env) {
 
 void asm_longjmp(asm_jmp_buf env, int val) {
   __asm__(
-    "movl %%esi, %%eax;"\
+    "movl %%rsi, %%rax;"\
     // 恢复rbp
-    "movq (%%rdi), %%rbp;"\
+    "movq 0(%%rdi), %%rbp;"\
     // 恢复rbx
     "movq 8(%%rdi), %%rbx;"\
     // 恢复r12-r15
