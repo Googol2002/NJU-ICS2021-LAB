@@ -105,27 +105,27 @@ int asm_setjmp(asm_jmp_buf env) {
 
 void asm_longjmp(asm_jmp_buf env, int val) {
   __asm__(
-    "movl %1, %%eax;"\
+    "movl %%rsi, %%eax;"\
     // 恢复rbp
-    "movq (%0), %%rbp;"\
+    "movq (%%rdi), %%rbp;"\
     // 恢复rbx
-    "movq 8(%0), %%rbx;"\
+    "movq 8(%%rdi), %%rbx;"\
     // 恢复r12-r15
-    "movq 32(%0), %%r12;"\
-    "movq 40(%0), %%r13;"\
-    "movq 48(%0), %%r14;"\
-    "movq 56(%0), %%r15;"\
+    "movq 32(%%rdi), %%r12;"\
+    "movq 40(%%rdi), %%r13;"\
+    "movq 48(%%rdi), %%r14;"\
+    "movq 56(%%rdi), %%r15;"\
     // 取rip
-    "movq 16(%0), %%r10;"\
+    "movq 16(%%rdi), %%r10;"\
     /* cannot be 0 in this case */
     "testl	%%eax, %%eax;"\
     "jnz	1f;"\
     "incl	%%eax;"\
     // 恢复rsp，在最后恢复是考虑到red zone的原因
-    "1:movq 24(%0), %%rsp;"\
+    "1:movq 24(%%rdi), %%rsp;"\
     //恢复rip
     "jmp *%%r10;":
-    :"D" (env), "S" (val)
+    :
     //将env强制在rdi中，val强制存在rsi中
   );
 }
