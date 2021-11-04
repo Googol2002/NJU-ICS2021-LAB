@@ -40,66 +40,107 @@
 //   }
 // }
 
-static void first();
-static void second();
+// static void first();
+// static void second();
 
-/* Use a file scoped static variable for the exception stack so we can access
- * it anywhere within this translation unit. */
-static asm_jmp_buf exception_env;
-static int exception_type;
+// /* Use a file scoped static variable for the exception stack so we can access
+//  * it anywhere within this translation unit. */
+// static asm_jmp_buf exception_env;
+// static int exception_type;
 
-int main(void) {
-    char* volatile mem_buffer = NULL;
+// int main(void) {
+//     char* volatile mem_buffer = NULL;
 
-    if (asm_setjmp(exception_env)) {
-        // if we get here there was an exception
-        printf("first failed, exception type: %d\n", exception_type);
-    } else {
-        // Run code that may signal failure via longjmp.
-        puts("calling first");
-        first();
+//     if (asm_setjmp(exception_env)) {
+//         // if we get here there was an exception
+//         printf("first failed, exception type: %d\n", exception_type);
+//     } else {
+//         // Run code that may signal failure via longjmp.
+//         puts("calling first");
+//         first();
 
-        mem_buffer = malloc(300); // allocate a resource
-        printf("%s\n", strcpy(mem_buffer, "first succeeded")); // not reached
+//         mem_buffer = malloc(300); // allocate a resource
+//         printf("%s\n", strcpy(mem_buffer, "first succeeded")); // not reached
+//     }
+
+//     free(mem_buffer); // NULL can be passed to free, no operation is performed
+
+//     return 0;
+// }
+
+// static void first() {
+//     asm_jmp_buf my_env;
+
+//     puts("entering first"); // reached
+
+//     memcpy(my_env, exception_env, sizeof my_env);
+
+//     switch (asm_setjmp(exception_env)) {
+//         case 3: // if we get here there was an exception.
+//             puts("second failed, exception type: 3; remapping to type 1");
+//             exception_type = 1;
+
+//         default: // fall through
+//             memcpy(exception_env, my_env, sizeof exception_env); // restore exception stack
+//             asm_longjmp(exception_env, exception_type); // continue handling the exception
+
+//         case 0: // normal, desired operation
+//             puts("calling second"); // reached 
+//             second();
+//             puts("second succeeded"); // not reached
+//     }
+
+//     memcpy(exception_env, my_env, sizeof exception_env); // restore exception stack
+
+//     puts("leaving first"); // never reached
+// }
+
+// static void second() {
+//     puts("entering second" ); // reached
+
+//     exception_type = 3;
+//     asm_longjmp(exception_env, exception_type); // declare that the program has failed
+
+//     puts("leaving second"); // not reached
+// }
+
+asm_jmp_buf mainTask, childTask;
+
+void call_with_cushion();
+void child();
+
+int main() {
+    if (!asm_setjmp(mainTask)) {
+        call_with_cushion(); // child never returns, yield
+    } // execution resumes after this "}" after first time that child yields
+
+    while (1) {
+        printf("Parent\n");
+        
+        if (!asm_setjmp(mainTask))
+            asm_longjmp(childTask, 1); // yield - note that this is undefined under C99
     }
-
-    free(mem_buffer); // NULL can be passed to free, no operation is performed
-
-    return 0;
 }
 
-static void first() {
-    asm_jmp_buf my_env;
-
-    puts("entering first"); // reached
-
-    memcpy(my_env, exception_env, sizeof my_env);
-
-    switch (asm_setjmp(exception_env)) {
-        case 3: // if we get here there was an exception.
-            puts("second failed, exception type: 3; remapping to type 1");
-            exception_type = 1;
-
-        default: // fall through
-            memcpy(exception_env, my_env, sizeof exception_env); // restore exception stack
-            asm_longjmp(exception_env, exception_type); // continue handling the exception
-
-        case 0: // normal, desired operation
-            puts("calling second"); // reached 
-            second();
-            puts("second succeeded"); // not reached
-    }
-
-    memcpy(exception_env, my_env, sizeof exception_env); // restore exception stack
-
-    puts("leaving first"); // never reached
+void call_with_cushion() {
+    char space[1000]; // Reserve enough space for main to run
+    space[999] = 1; // Do not optimize array out of existence
+    child();
 }
 
-static void second() {
-    puts("entering second" ); // reached
+void child() {
+    while (1) {
+        printf("Child loop begin\n");
+        
+        if (!asm_setjmp(childTask))
+            asm_longjmp(mainTask, 1); // yield - invalidates childTask in C99
 
-    exception_type = 3;
-    asm_longjmp(exception_env, exception_type); // declare that the program has failed
+        printf("Child loop end\n");
 
-    puts("leaving second"); // not reached
+        if (!asm_setjmp(childTask))
+            asm_longjmp(mainTask, 1); // yield - invalidates childTask in C99
+    }
+
+    /* Don't return. Instead we should set a flag to indicate that main()
+       should stop yielding to us and then longjmp(mainTask, 1) */
 }
