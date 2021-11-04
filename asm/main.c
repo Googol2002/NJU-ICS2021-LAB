@@ -6,6 +6,7 @@
 int main() {
   asm_jmp_buf buf1, buf2;
   int a = 1, b = 2, c = 3, d = 4, e = 5, i = 9;
+  int f = 1, g = 2, h = 3, j = 4, k = 5, l = 9;
   char src[32] = "12345678";
   char dst[32];
   char arr1[] = "abcdefghijk";
