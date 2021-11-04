@@ -79,26 +79,27 @@ void *asm_memcpy(void *dest, const void *src, size_t n) {
 
 int asm_setjmp(asm_jmp_buf env) {
   
-   __asm__(
-    // 存rbx
-    "movq %%rbx, 8(%%rdi);"\
-    // 存 r12 - r15
-    "movq %%r12, 32(%%rdi);"\
-    "movq %%r13, 40(%%rdi);"\
-    "movq %%r14, 48(%%rdi);"\
-    "movq %%r15, 56(%%rdi);"\
-    //恢复
-    "leave;"\
-    "popq %%rcx;"\
-    // 存old rip
-    "movq %%rcx, 16(%%rdi);"\
-    // 存old rpb
-    "movq %%rbp, 0(%%rdi);"\
-    // 存old rsp
-    "movq %%rsp, 24(%%rdi);"\
-    "xorq %%rax, %%rax;"\
-    "jmpq	*%%rcx"::
+   asm (
+    "push %%rbp;"
+    "mov %%rsp, %%rbp;"
+    "mov %%rdi, %%rax;" //rax <- env
+    "mov %%rcx, (%%rax);"
+    "mov %%rdx, 8(%%rax);"
+    "mov %%rbx, 16(%%rax);"
+    "mov %%rsi, 24(%%rax);"
+    "mov (%%rbp), %%rdi;"
+    "mov %%rdi, 32(%%rax);"
+    "lea 16(%%rbp), %%rdi;"
+    "mov %%rdi, 40(%%rax);"
+    "mov 8(%%rbp), %%rdi;"
+    "mov %%rdi, 48(%%rax);"
+    "xor %%rax, %%rax;"
+    "pop %%rbp;"
+    :
+    :
+    :
   );
+  return 0;
   
   return 0;
 }
@@ -125,7 +126,7 @@ void asm_longjmp(asm_jmp_buf env, int val) {
     "1:movq 24(%%rdi), %%rsp;"\
     //恢复rip
     "jmp *%%rcx;":
-    :
+    ::
     //将env强制在rdi中，val强制存在rsi中
   );
 }
