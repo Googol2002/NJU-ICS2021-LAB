@@ -50,7 +50,7 @@ void fun()
 int main()
 {
     int ret;
-    if(ret = asm_setjmp(my_jum_buf))
+    if((ret = asm_setjmp(my_jum_buf), ret))
     {
         printf("Main: return after calling longjmp, ret = %d.\n", ret);
     }
