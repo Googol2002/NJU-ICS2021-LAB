@@ -40,69 +40,69 @@ int main() {
   }
 }
 
-static void first();
-static void second();
+// static void first();
+// static void second();
 
-/* Use a file scoped static variable for the exception stack so we can access
- * it anywhere within this translation unit. */
-static asm_jmp_buf exception_env;
-static int exception_type;
+// /* Use a file scoped static variable for the exception stack so we can access
+//  * it anywhere within this translation unit. */
+// static asm_jmp_buf exception_env;
+// static int exception_type;
 
-int main(void) {
-    char* volatile mem_buffer = NULL;
+// int main(void) {
+//     char* volatile mem_buffer = NULL;
 
-    if (asm_setjmp(exception_env)) {
-        // if we get here there was an exception
-        printf("first failed, exception type: %d\n", exception_type);
-    } else {
-        // Run code that may signal failure via longjmp.
-        puts("calling first");
-        first();
+//     if (asm_setjmp(exception_env)) {
+//         // if we get here there was an exception
+//         printf("first failed, exception type: %d\n", exception_type);
+//     } else {
+//         // Run code that may signal failure via longjmp.
+//         puts("calling first");
+//         first();
 
-        mem_buffer = malloc(300); // allocate a resource
-        printf("%s\n", strcpy(mem_buffer, "first succeeded")); // not reached
-    }
+//         mem_buffer = malloc(300); // allocate a resource
+//         printf("%s\n", strcpy(mem_buffer, "first succeeded")); // not reached
+//     }
 
-    free(mem_buffer); // NULL can be passed to free, no operation is performed
+//     free(mem_buffer); // NULL can be passed to free, no operation is performed
 
-    return 0;
-}
+//     return 0;
+// }
 
-static void first() {
-    asm_jmp_buf my_env;
+// static void first() {
+//     asm_jmp_buf my_env;
 
-    puts("entering first"); // reached
+//     puts("entering first"); // reached
 
-    memcpy(my_env, exception_env, sizeof my_env);
+//     memcpy(my_env, exception_env, sizeof my_env);
 
-    switch (asm_setjmp(exception_env)) {
-        case 3: // if we get here there was an exception.
-            puts("second failed, exception type: 3; remapping to type 1");
-            exception_type = 1;
+//     switch (asm_setjmp(exception_env)) {
+//         case 3: // if we get here there was an exception.
+//             puts("second failed, exception type: 3; remapping to type 1");
+//             exception_type = 1;
 
-        default: // fall through
-            memcpy(exception_env, my_env, sizeof exception_env); // restore exception stack
-            asm_longjmp(exception_env, exception_type); // continue handling the exception
+//         default: // fall through
+//             memcpy(exception_env, my_env, sizeof exception_env); // restore exception stack
+//             asm_longjmp(exception_env, exception_type); // continue handling the exception
 
-        case 0: // normal, desired operation
-            puts("calling second"); // reached 
-            second();
-            puts("second succeeded"); // not reached
-    }
+//         case 0: // normal, desired operation
+//             puts("calling second"); // reached 
+//             second();
+//             puts("second succeeded"); // not reached
+//     }
 
-    memcpy(exception_env, my_env, sizeof exception_env); // restore exception stack
+//     memcpy(exception_env, my_env, sizeof exception_env); // restore exception stack
 
-    puts("leaving first"); // never reached
-}
+//     puts("leaving first"); // never reached
+// }
 
-static void second() {
-    puts("entering second" ); // reached
+// static void second() {
+//     puts("entering second" ); // reached
 
-    exception_type = 3;
-    asm_longjmp(exception_env, exception_type); // declare that the program has failed
+//     exception_type = 3;
+//     asm_longjmp(exception_env, exception_type); // declare that the program has failed
 
-    puts("leaving second"); // not reached
-}
+//     puts("leaving second"); // not reached
+// }
 
 // asm_jmp_buf mainTask, childTask;
 
