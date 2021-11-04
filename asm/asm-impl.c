@@ -97,7 +97,7 @@ int asm_setjmp(asm_jmp_buf env) {
     // 存old rsp
     "movq %%rsp, 24(%%rdi);"\
     "xorq %%rax, %%rax;"\
-    "jmpq	*%%rcx"::
+    "jmpq	*%%rcx":::
   );
   
   return 0;
@@ -124,7 +124,7 @@ void asm_longjmp(asm_jmp_buf env, int val) {
     // 恢复rsp，在最后恢复是考虑到red zone的原因
     "1:movq 24(%%rdi), %%rsp;"\
     //恢复rip
-    "jmp *%%rcx;"
+    "jmp *%%rcx;":::
     //将env强制在rdi中，val强制存在rsi中
   );
 }
