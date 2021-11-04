@@ -117,7 +117,7 @@ void asm_longjmp(asm_jmp_buf env, int val) {
     "movq 56(%%rdi), %%r15;"\
     // 取rip
     "movq 16(%%rdi), %%rcx;"\
-    /* cannot be 0 in this case */
+    /* 如果是0，就加1 */
     "testq	%%rax, %%rax;"\
     "jnz	1f;"\
     "incq	%%rax;"\
