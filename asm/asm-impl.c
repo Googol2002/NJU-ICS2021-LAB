@@ -77,7 +77,7 @@ void *asm_memcpy(void *dest, const void *src, size_t n) {
   return dest;
 }
 
-int asm_setjmp(volatile asm_jmp_buf env) {
+int asm_setjmp(asm_jmp_buf env) {
   
    __asm__(
     // 存rbx
@@ -103,7 +103,7 @@ int asm_setjmp(volatile asm_jmp_buf env) {
   return 0;
 }
 
-void asm_longjmp(volatile asm_jmp_buf env, volatile int val) {
+void asm_longjmp(asm_jmp_buf env, int val) {
   __asm__(
     "movq %%rsi, %%rax;"\
     // 恢复rbp
