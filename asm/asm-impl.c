@@ -91,7 +91,8 @@ int asm_setjmp(asm_jmp_buf env) {
     "movq 8(%%rsp), %%rcx;"\
     "movq %%rcx, 16(%%rdi);"\
     // 存saved rpb
-    "movq (%%rsp), 0(%%rdi);"\
+    "movq (%%rsp), %%rcx;"\
+    "movq %%rcx, 0(%%rdi);"\
     // 存last rsp
     "lea 16(%%rsp), %%rcx;"\
     "movq %%rcx, 24(%%rdi);"\
