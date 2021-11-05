@@ -81,8 +81,8 @@ int asm_setjmp(asm_jmp_buf env) {
    __asm__(
     // 存rbx
     "movq %%rbx, 8(%%rdi);"\
-    // 存 r12 - r15
-    "movq %%r12, 32(%%rdi);"\
+    // 存 r10, r13 - r15
+    "movq %%r10, 32(%%rdi);"\
     "movq %%r13, 40(%%rdi);"\
     "movq %%r14, 48(%%rdi);"\
     "movq %%r15, 56(%%rdi);"\
@@ -110,8 +110,8 @@ void asm_longjmp(asm_jmp_buf env, int val) {
     "movq 0(%%rdi), %%rbp;"\
     // 恢复rbx
     "movq 8(%%rdi), %%rbx;"\
-    // 恢复r12-r15
-    "movq 32(%%rdi), %%r12;"\
+    // 恢复r10, r13-r15
+    "movq 32(%%rdi), %%r10;"\
     "movq 40(%%rdi), %%r13;"\
     "movq 48(%%rdi), %%r14;"\
     "movq 56(%%rdi), %%r15;"\
