@@ -93,7 +93,8 @@ int asm_setjmp(asm_jmp_buf env) {
     // 存saved rpb
     "movq (%%rsp), 0(%%rdi);"\
     // 存last rsp
-    "lea 16(%%rsp), 24(%%rdi);"\
+    "lea 16(%%rsp), %%rcx;"\
+    "lea %%rcx, 24(%%rdi);"\
     "xorq %%rax, %%rax;"
     :::
   );
@@ -104,7 +105,7 @@ int asm_setjmp(asm_jmp_buf env) {
 void asm_longjmp(asm_jmp_buf env, int val) {
   __asm__(
     "movq %%rsi, %%rax;"\
-    // 恢复rbp
+    // 恢复saved rbp
     "movq 0(%%rdi), %%rbp;"\
     // 恢复rbx
     "movq 8(%%rdi), %%rbx;"\
