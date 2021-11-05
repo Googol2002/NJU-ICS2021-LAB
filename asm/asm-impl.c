@@ -103,7 +103,7 @@ int asm_setjmp(register asm_jmp_buf env) {
   return 0;
 }
 
-void asm_longjmp(asm_jmp_buf env, int val) {
+void asm_longjmp(register asm_jmp_buf env, register int val) {
   __asm__(
     "movq %%rsi, %%rax;"\
     // 恢复saved rbp
