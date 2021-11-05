@@ -77,7 +77,7 @@ void *asm_memcpy(void *dest, const void *src, size_t n) {
   return dest;
 }
 
-int asm_setjmp(asm_jmp_buf env) {
+int asm_setjmp(register asm_jmp_buf env) {
    __asm__(
     // 存rbx
     "movq %%rbx, 8(%%rdi);"\
