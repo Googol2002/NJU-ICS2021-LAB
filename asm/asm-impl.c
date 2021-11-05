@@ -88,13 +88,13 @@ int asm_setjmp(asm_jmp_buf env) {
     "movq %%r15, 56(%%rdi);"\
     //恢复
     // 存old rip
-    "movq 8(%%rsp), %%rax;"\
+    "movq 8(%%rbp), %%rax;"\
     "movq %%rax, 16(%%rdi);"\
     // 存saved rpb
-    "movq (%%rsp), %%rax;"\
+    "movq (%%rbp), %%rax;"\
     "movq %%rax, 0(%%rdi);"\
     // 存last rsp
-    "lea 16(%%rsp), %%rax;"\
+    "lea 16(%%rbp), %%rax;"\
     "movq %%rax, 24(%%rdi);"\
     "xorq %%rax, %%rax;"
     :::
