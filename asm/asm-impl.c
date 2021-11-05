@@ -78,7 +78,6 @@ void *asm_memcpy(void *dest, const void *src, size_t n) {
 }
 
 int asm_setjmp(asm_jmp_buf env) {
-  
    __asm__(
     // 存rbx
     "movq %%rbx, 8(%%rdi);"\
@@ -88,16 +87,15 @@ int asm_setjmp(asm_jmp_buf env) {
     "movq %%r14, 48(%%rdi);"\
     "movq %%r15, 56(%%rdi);"\
     //恢复
-    "leave;"\
-    "popq %%rcx;"\
     // 存old rip
+    "movq 8(%%rsp), %%rcx;"\
     "movq %%rcx, 16(%%rdi);"\
-    // 存old rpb
-    "movq %%rbp, 0(%%rdi);"\
-    // 存old rsp
-    "movq %%rsp, 24(%%rdi);"\
-    "xorq %%rax, %%rax;"\
-    "jmpq	*%%rcx":::
+    // 存saved rpb
+    "movq (%%rsp), 0(%%rdi);"\
+    // 存last rsp
+    "lea 16(%%rsp), 24(%%rdi);"\
+    "xorq %%rax, %%rax;"
+    :::
   );
   
   return 0;
