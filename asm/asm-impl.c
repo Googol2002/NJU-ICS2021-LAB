@@ -94,7 +94,7 @@ int volatile asm_setjmp(asm_jmp_buf env) {
     "movq %%rbp, 0(%%rdi);"\
     // 存last rsp
     "lea 8(%%rsp), %%rax;"\
-    "lea %%rax, 24(%%rdi);"\
+    "mov %%rax, 24(%%rdi);"\
     "xorq %%rax, %%rax;"
     :::
   );
