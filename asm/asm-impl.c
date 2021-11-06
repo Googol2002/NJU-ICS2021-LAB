@@ -78,11 +78,11 @@ void *asm_memcpy(void *dest, const void *src, size_t n) {
 }
 
 int asm_setjmp(asm_jmp_buf env) {
-   __asm__(
+   volatile __asm__(
     // 存rbx
     "movq %%rbx, 8(%%rdi);"\
     // 存 r10, r13 - r15
-    "movq %%r12, 32(%%rdi);"\
+    "movq %%r10, 32(%%rdi);"\
     "movq %%r13, 40(%%rdi);"\
     "movq %%r14, 48(%%rdi);"\
     "movq %%r15, 56(%%rdi);"\
@@ -102,14 +102,14 @@ int asm_setjmp(asm_jmp_buf env) {
 }
 
 void asm_longjmp(asm_jmp_buf env, int val) {
-  __asm__(
+  volatile __asm__(
     "movl %%esi, %%eax;"\
     // 恢复saved rbp
     "movq 0(%%rdi), %%rbp;"\
     // 恢复rbx
     "movq 8(%%rdi), %%rbx;"\
     // 恢复r10, r13-r15
-    "movq 32(%%rdi), %%r12;"\
+    "movq 32(%%rdi), %%r10;"\
     "movq 40(%%rdi), %%r13;"\
     "movq 48(%%rdi), %%r14;"\
     "movq 56(%%rdi), %%r15;"\
