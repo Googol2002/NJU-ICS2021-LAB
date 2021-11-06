@@ -105,20 +105,7 @@ void volatile asm_longjmp(asm_jmp_buf env, int val) {
   __asm__(
     "movl %%esi, %%eax;"\
     // 恢复saved rbp
-    "movq 0(%%rdi), %%rbp;"\
-    // 恢复rbx
-    "movq 8(%%rdi), %%rbx;"\
-    // 恢复r10, r13-r15
-    "movq 32(%%rdi), %%r10;"\
-    "movq 40(%%rdi), %%r13;"\
-    "movq 48(%%rdi), %%r14;"\
-    "movq 56(%%rdi), %%r15;"\
-    // 取rip
-    "movq 16(%%rdi), %%rcx;"\
-    /* 如果是0，就加1 */
-    "testl	%%eax, %%eax;"\
-    "jnz	1f;"\
-    "inc	%%eax;"\
+    
     // 恢复rsp，在最后恢复是考虑到red zone的原因
     "1:movq 24(%%rdi), %%rsp;"\
     //恢复rip
