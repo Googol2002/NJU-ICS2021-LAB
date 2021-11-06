@@ -116,7 +116,7 @@ void asm_longjmp(asm_jmp_buf env, int val) {
     // 取rip
     "movq 16(%%rdi), %%rsi;"\
     /* 如果是0，就加1 */
-    "testq	%%rax, %%rax;"\
+    "testl	%%eax, %%eax;"\
     "jnz	1f;"\
     "inc	%%eax;"\
     // 恢复rsp，在最后恢复是考虑到red zone的原因
