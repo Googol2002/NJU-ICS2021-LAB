@@ -103,7 +103,7 @@ int asm_setjmp(register asm_jmp_buf env) {
 
 void asm_longjmp(register asm_jmp_buf env, register int val) {
   __asm__(
-    "movq %%esi, %%eax;"\
+    "movl %%esi, %%eax;"\
     // 恢复saved rbp
     "movq 0(%%rdi), %%rbp;"\
     // 恢复rbx
