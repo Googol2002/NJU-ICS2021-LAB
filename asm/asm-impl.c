@@ -103,7 +103,9 @@ int asm_setjmp(register asm_jmp_buf env) {
 
 void asm_longjmp(register asm_jmp_buf env, register int val) {
   __asm__(
-    "movq %%rsi, %%rax;"\
+    "movq %%esi, %%eax;"\
+    // 恢复saved rbp
+    "movq 0(%%rdi), %%rbp;"\
     // 恢复rbx
     "movq 8(%%rdi), %%rbx;"\
     // 恢复r10, r13-r15
@@ -119,7 +121,6 @@ void asm_longjmp(register asm_jmp_buf env, register int val) {
     "incq	%%rax;"\
     // 恢复rsp，在最后恢复是考虑到red zone的原因
     "1:movq 24(%%rdi), %%rsp;"\
-    // 恢复saved rbp
     //恢复rip
     "jmp *%%rsi;":::
     //将env强制在rdi中，val强制存在rsi中
