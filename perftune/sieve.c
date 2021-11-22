@@ -11,14 +11,14 @@ static int primes[N];
 
 #define ABS(x) (x > 0 ? x : -x)
 
-static uint16_t my_sqrt(uint32_t n){
-  double guess = n;
-  while (ABS(guess * guess - n) >= 0.25){
-    guess = (guess + n / guess) / 2.0;
-  }
+// static uint16_t my_sqrt(uint32_t n){
+//   double guess = n;
+//   while (ABS(guess * guess - n) >= 0.25){
+//     guess = (guess + n / guess) / 2.0;
+//   }
 
-  return (uint16_t)guess + 1;
-}
+//   return (uint16_t)guess + 1;
+// }
 
 
 int *sieve(int n) {
