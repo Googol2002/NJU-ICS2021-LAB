@@ -12,7 +12,7 @@
 static bool is_prime[N] = {0};
 static int primes[N];
 
-#define ABS(x) (x > 0 ? x : -x)
+#define MIN(x, y) (x > y ? y : x)
 
 // static uint16_t my_sqrt(uint32_t n){
 //   double guess = n;
@@ -30,10 +30,16 @@ int *sieve(int n) {
     is_prime[i] = true;
 
   for (int i = 2; i <= n; i++) {
-    if(is_prime[i])
-      for (int j = i + i; j <= n; j += i) {
+    if(is_prime[i]){
+      int product = i * i;
+      if (product > n){
+        break;
+      }
+      for (int j = product; j <= n; j += i) {
         is_prime[j] = false;
       }
+    }
+      
   }
 
   int *p = primes;
