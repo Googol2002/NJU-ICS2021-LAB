@@ -6,7 +6,10 @@
 
 #define N 10000000
 
-static int is_prime[N] = {0};
+#define TRUE 0
+#define FALSE 1
+
+static bool is_prime[N] = {0};
 static int primes[N];
 
 #define ABS(x) (x > 0 ? x : -x)
@@ -23,16 +26,19 @@ static int primes[N];
 
 int *sieve(int n) {
   assert(n + 1 < N);
+  for (int i = 0; i <= n; i++)
+    is_prime[i] = true;
 
-  for (int i = 2; i <= (n); i++) {//O(n^2)变为O(n^{3/2})
-    for (int j = i + i; j <= n; j += i) {
-      is_prime[j] = 1; // 用1表示false，0默认为true
-    }
+  for (int i = 2; i <= n; i++) {
+    if(is_prime[i])
+      for (int j = i + i; j <= n; j += i) {
+        is_prime[j] = false;
+      }
   }
 
   int *p = primes;
-  for (int i = 2; i <= n; i++)//O(n)
-    if (!is_prime[i]) {// 0默认为true
+  for (int i = 2; i <= n; i++)
+    if (is_prime[i]) {
       *p++ = i;
     }
   *p = 0;
