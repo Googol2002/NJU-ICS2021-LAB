@@ -124,9 +124,8 @@ void init_cache(int total_size_width, int associativity_width) {
   
   inner_addr_mask = mask_with_len(BLOCK_WIDTH);
   group_number_mask = mask_with_len(cache_group_width) << BLOCK_WIDTH;
-  tag_mask = mask_with_len(MEM_SIZE - BLOCK_WIDTH - cache_group_width) 
-    << (BLOCK_WIDTH + cache_group_width);
-  block_number_mask = mask_with_len(MEM_SIZE - BLOCK_WIDTH);
+  tag_mask = ~mask_with_len(BLOCK_WIDTH + cache_group_width) ;
+  block_number_mask = ~mask_with_len(BLOCK_WIDTH);
 
   // exp2(cache_total_size_width) 为 cache全部数据区大小
   cache_slot = calloc(exp2(cache_total_size_width) / BLOCK_SIZE, sizeof(struct CACHE_SLOT));
