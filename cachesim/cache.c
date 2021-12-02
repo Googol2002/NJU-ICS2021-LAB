@@ -18,8 +18,8 @@ struct CACHE_SLOT{
 };
 
 static struct CACHE_SLOT *cache_slot;
-static int cache_total_size_width, cache_associativity_width, cache_group_width, block_number_mask;
-uintptr_t inner_addr_mask, group_number_mask, tag_mask;
+static uint32_t cache_total_size_width, cache_associativity_width, cache_group_width;
+uintptr_t inner_addr_mask, group_number_mask, tag_mask, block_number_mask;
 
 static inline uintptr_t extract_inner_addr(uintptr_t addr){
   return addr & inner_addr_mask;
