@@ -34,7 +34,7 @@ static inline uintptr_t extract_tag(uintptr_t addr){
 }
 
 static inline uintptr_t map_to_cache_addr(uintptr_t addr, uint32_t i){
-  return extract_group_number(addr) << cache_associativity_width + i;
+  return (extract_group_number(addr) << cache_associativity_width) + i;
 }
 
 static inline uintptr_t extract_block_number(uintptr_t addr){
@@ -64,7 +64,7 @@ uint32_t cache_read(uintptr_t addr) {
     i < map_to_cache_addr(addr, exp2(cache_associativity_width)); ++i){
 
     if (cache_slot[i].valid && cache_slot[i].tag == extract_tag(addr)){
-        return cache_slot[i].data;
+        return * ((uint32_t*) &cache_slot[i].data[extract_inner_addr(addr)]);
     }
   }
 
@@ -78,7 +78,7 @@ uint32_t cache_read(uintptr_t addr) {
 
   read_from(addr, index);
 
-  return 0;
+  return * ((uint32_t*) target_cache->data[extract_inner_addr(addr)]);
 }
 
 void cache_write(uintptr_t addr, uint32_t data, uint32_t wmask) {
