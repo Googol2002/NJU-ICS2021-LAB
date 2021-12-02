@@ -78,7 +78,7 @@ uint32_t cache_read(uintptr_t addr) {
 
   read_from(addr, index);
 
-  return * ((uint32_t*) target_cache->data[extract_inner_addr(addr)]);
+  return * ((uint32_t*) &target_cache->data[extract_inner_addr(addr)]);
 }
 
 void cache_write(uintptr_t addr, uint32_t data, uint32_t wmask) {
