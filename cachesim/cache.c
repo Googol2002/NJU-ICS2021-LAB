@@ -26,7 +26,7 @@ static inline uintptr_t extract_inner_addr(uintptr_t addr){
 }
 
 static inline uintptr_t align_inner_addr(uintptr_t addr){
-  return (addr & inner_addr_mask) & ~0x3;
+  return (addr & inner_addr_mask) & (~0x3);
 }
 
 static inline uintptr_t extract_group_number(uintptr_t addr){
@@ -51,9 +51,8 @@ static inline uintptr_t construct_block_number(uintptr_t tag, uint32_t index){
 
 static inline uint32_t choose(uint32_t n) { return rand() % n; }
 
-static void write_back(uintptr_t addr, uint32_t index){
-  struct CACHE_SLOT* target_cache = &cache_slot[map_to_cache_addr(addr, index)];
-  mem_write(construct_block_number(target_cache->tag, index), target_cache->data);
+static void write_back(struct CACHE_SLOT* target_cache, uintptr_t addr){
+  mem_write(construct_block_number(target_cache->tag, extract_group_number(addr)), target_cache->data);
   target_cache->dirty = false;
 }
 
@@ -61,6 +60,8 @@ static void read_from(uintptr_t addr, uint32_t index){
   struct CACHE_SLOT* target_cache = &cache_slot[map_to_cache_addr(addr, index)];
   mem_read(extract_block_number(addr), target_cache->data);
   target_cache->valid = true;
+  target_cache->dirty = false;
+  target_cache->tag = extract_tag(addr);
 }
 
 uint32_t cache_read(uintptr_t addr) {
@@ -77,7 +78,7 @@ uint32_t cache_read(uintptr_t addr) {
 
   struct CACHE_SLOT* target_cache = &cache_slot[map_to_cache_addr(addr, index)];
   if (target_cache->dirty){
-    write_back(addr, index);
+    write_back(target_cache, addr);
   }
 
   read_from(addr, index);
@@ -87,32 +88,30 @@ uint32_t cache_read(uintptr_t addr) {
 
 void cache_write(uintptr_t addr, uint32_t data, uint32_t wmask) {
   bool hit = false;
-  uint32_t index = -1;
+  struct CACHE_SLOT* target_cache;
 
   for (int i = map_to_cache_addr(addr, 0);
     i < map_to_cache_addr(addr, exp2(cache_associativity_width)); ++i){
     if (cache_slot[i].valid && cache_slot[i].tag == extract_tag(addr)){
         hit = true;
-        index = i;
+        target_cache = &cache_slot[i];
     }
   }
 
-  struct CACHE_SLOT* target_cache;
+
   if (!hit){
-    index = choose(exp2(cache_associativity_width));
+    uint32_t index = choose(exp2(cache_associativity_width));
     target_cache = &cache_slot[map_to_cache_addr(addr, index)];
     
     if (target_cache->valid){
       if (target_cache->dirty){
-        write_back(addr, index);
+        write_back(target_cache, addr);
       }
       read_from(addr, index);
     }else {
       read_from(addr, index);
     }
-  }else {
-    target_cache = &cache_slot[map_to_cache_addr(addr, index)];
-  }
+  }else {}
 
   uint32_t *data_target = (uint32_t *)(&target_cache->data[align_inner_addr(addr)]);
   *data_target = (*data_target & ~wmask) | (data & wmask);
