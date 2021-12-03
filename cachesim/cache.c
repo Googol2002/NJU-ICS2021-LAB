@@ -25,6 +25,10 @@ static inline uintptr_t extract_inner_addr(uintptr_t addr){
   return addr & inner_addr_mask;
 }
 
+static inline uintptr_t align_inner_addr(uintptr_t addr){
+  return (addr & inner_addr_mask) & ~0x3;
+}
+
 static inline uintptr_t extract_group_number(uintptr_t addr){
   return (addr & group_number_mask) >> BLOCK_WIDTH;
 }
@@ -38,11 +42,11 @@ static inline uintptr_t map_to_cache_addr(uintptr_t addr, uint32_t i){
 }
 
 static inline uintptr_t extract_block_number(uintptr_t addr){
-  return addr & block_number_mask >> BLOCK_WIDTH;
+  return (addr & block_number_mask) >> BLOCK_WIDTH;
 }
 
 static inline uintptr_t construct_block_number(uintptr_t tag, uint32_t index){
-  return tag << cache_group_width | index;
+  return (tag << cache_group_width) | index;
 }
 
 static inline uint32_t choose(uint32_t n) { return rand() % n; }
@@ -64,7 +68,7 @@ uint32_t cache_read(uintptr_t addr) {
     i < map_to_cache_addr(addr, exp2(cache_associativity_width)); ++i){
 
     if (cache_slot[i].valid && cache_slot[i].tag == extract_tag(addr)){
-        return * ((uint32_t*) &cache_slot[i].data[extract_inner_addr(addr)]);
+        return * ((uint32_t*) &cache_slot[i].data[align_inner_addr(addr)]);
     }
   }
 
@@ -78,7 +82,7 @@ uint32_t cache_read(uintptr_t addr) {
 
   read_from(addr, index);
 
-  return * ((uint32_t*) &target_cache->data[extract_inner_addr(addr)]);
+  return * ((uint32_t*) &target_cache->data[align_inner_addr(addr)]);
 }
 
 void cache_write(uintptr_t addr, uint32_t data, uint32_t wmask) {
@@ -110,9 +114,8 @@ void cache_write(uintptr_t addr, uint32_t data, uint32_t wmask) {
     target_cache = &cache_slot[map_to_cache_addr(addr, index)];
   }
 
-  uint32_t *data_target = (uint32_t *)(&target_cache->data[extract_inner_addr(addr)]);
-  *data_target &= (~wmask);
-  *data_target |= (data & wmask);
+  uint32_t *data_target = (uint32_t *)(&target_cache->data[align_inner_addr(addr)]);
+  *data_target = (*data_target & ~wmask) | (data & wmask);
   target_cache->dirty = true;
 }
 
